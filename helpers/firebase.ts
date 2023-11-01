@@ -6,7 +6,7 @@ import {
     MESSAGING_SENDER_ID,
     PROJECT_ID,
     STORAGE_BUCKET,
-} from "@env";
+} from "react-native-dotenv";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
