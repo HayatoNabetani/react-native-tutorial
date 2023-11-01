@@ -11,10 +11,13 @@ export const useItems = () => {
 
     const getItems = async () => {
         const q = query(collection(firestore, "feels"));
-        let tmpItems: string[] = [];
+        let tmpItems: any = [];
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
-            tmpItems.push(doc.data());
+            tmpItems.push({
+                ...doc.data(),
+                id: doc.id,
+            });
         });
 
         setItems(tmpItems);

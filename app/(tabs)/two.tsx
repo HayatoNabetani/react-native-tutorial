@@ -6,17 +6,21 @@ import { useItems } from "../../hooks/useEmoji";
 import { FlatList, TextInput } from "react-native-gesture-handler";
 import { useBody } from "../../hooks/useBody";
 import { useState } from "react";
+import { db, insertDiary } from "../../helpers/sqlite";
 
 export default function TabTwoScreen() {
     const { items } = useItems();
 
     const [templates, setTemplates] = useState([]);
 
+    const [selectedTemplate, setSelectedTemplate] = useState({});
+
     // const { body, setBody } = useBody();
     const [body, setBody] = useState("");
 
     const emojiPress = (name: string) => {
         const targetItem = items.find((item: any) => item.name === name);
+        setSelectedTemplate(targetItem);
         setTemplates(targetItem.templates);
     };
 
@@ -24,9 +28,26 @@ export default function TabTwoScreen() {
         setBody(content);
     };
 
+    const onSubmit = () => {
+        // console.log(body, selectedTemplate);
+        Alert.alert("Tap Diary", "Write Diary", [
+            {
+                text: "Ask me later",
+                onPress: () => console.log("Ask me later pressed"),
+            },
+            {
+                text: "Cancel",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+            },
+            { text: "OK", onPress: () => console.log("OK Pressed") },
+        ]);
+        // insertDiary(db, body, selectedTemplate);
+    };
+
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Tab Two</Text>
+            <Text style={styles.title}>Diary</Text>
             <FlatList
                 data={items}
                 renderItem={({ item }) => (
@@ -59,11 +80,8 @@ export default function TabTwoScreen() {
                 onChangeText={setBody}
                 value={body}
             />
-            <Button
-                title="Press me"
-                onPress={() => Alert.alert("Simple Button pressed")}
-            />
-            <EditScreenInfo path="app/(tabs)/two.tsx" />
+            <Button title="Press me" onPress={() => onSubmit()} />
+            {/* <EditScreenInfo path="app/(tabs)/two.tsx" /> */}
         </View>
     );
 }

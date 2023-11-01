@@ -1,9 +1,10 @@
+import dayjs from "dayjs";
 import * as SQLite from "expo-sqlite";
 
 /**
  * SQLiteと接続
  */
-const db = SQLite.openDatabase("tapdiary");
+export const db = SQLite.openDatabase("tapdiary");
 
 /**
  * テーブルを作成する
@@ -80,22 +81,25 @@ export const insertDiary = (
  * データを取得する
  */
 export const select = () => {
-    db.transaction((tx) => {
-        tx.executeSql(
-            // 実行したいSQL文
-            `select * from sample_table;`,
-            // SQL文の引数
-            [],
-            // 成功時のコールバック関数
-            (_, { rows }) => {
-                console.log("select success");
-                console.log("select result:" + JSON.stringify(rows._array));
-            },
-            () => {
-                // 失敗時のコールバック関数
-                console.log("select faile");
-                return false;
-            }
-        );
+    return new Promise((resolve, reject) => {
+        db.transaction((tx) => {
+            tx.executeSql(
+                // 実行したいSQL文
+                `select * from diaries ORDER BY id DESC LIMIT 5;`,
+                // SQL文の引数
+                [],
+                // 成功時のコールバック関数
+                (_, { rows }) => {
+                    console.log("select success");
+                    console.log("select result:" + JSON.stringify(rows._array));
+                    resolve(rows._array);
+                },
+                (error: any) => {
+                    // 失敗時のコールバック関数
+                    console.log(error);
+                    reject(error);
+                }
+            );
+        });
     });
 };
